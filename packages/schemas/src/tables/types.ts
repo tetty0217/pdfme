@@ -1,4 +1,4 @@
-import type { ALIGNMENT, VERTICAL_ALIGNMENT } from '../text/types.js';
+import type { ALIGNMENT, VERTICAL_ALIGNMENT, DYNAMIC_FONT_SIZE_FIT } from '../text/types.js';
 import type { Schema } from '@pdfme/common';
 
 export type Spacing = { top: number; right: number; bottom: number; left: number };
@@ -17,6 +17,11 @@ export interface CellStyle {
   borderColor: string;
   borderWidth: BoxDimensions;
   padding: BoxDimensions;
+  dynamicFontSize?: {
+    min: number;
+    max: number;
+    fit: DYNAMIC_FONT_SIZE_FIT;
+  };
 }
 
 export type CellSchema = Schema & CellStyle;
@@ -52,6 +57,11 @@ export interface Styles {
   cellWidth: number;
   minCellHeight: number;
   minCellWidth: number;
+  dynamicFontSize?: {
+    min: number;
+    max: number;
+    fit: DYNAMIC_FONT_SIZE_FIT;
+  };
 }
 
 export interface TableInput {

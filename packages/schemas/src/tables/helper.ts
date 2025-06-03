@@ -10,6 +10,11 @@ import {
   VERTICAL_ALIGN_TOP,
   VERTICAL_ALIGN_MIDDLE,
   VERTICAL_ALIGN_BOTTOM,
+  DYNAMIC_FIT_HORIZONTAL,
+  DYNAMIC_FIT_VERTICAL,
+  DEFAULT_DYNAMIC_FIT,
+  DEFAULT_DYNAMIC_MIN_FONT_SIZE,
+  DEFAULT_DYNAMIC_MAX_FONT_SIZE,
 } from '../text/constants.js';
 import { HEX_COLOR_PATTERN } from '../constants.js';
 
@@ -25,6 +30,7 @@ export const getDefaultCellStyles = () => ({
   borderColor: '#888888',
   borderWidth: { top: 0.1, bottom: 0.1, left: 0.1, right: 0.1 },
   padding: { top: 5, bottom: 5, left: 5, right: 5 },
+  dynamicFontSize: undefined,
 });
 
 const getBoxDimensionProp = (step = 1) => {
@@ -107,6 +113,45 @@ export const getCellPropPanelSchema = (arg: {
       props: { step: 0.1, min: 0 },
       span: 8,
     },
+    ...(isBody
+      ? {
+          useDynamicFontSize: {
+            type: 'boolean',
+            widget: 'UseDynamicFontSize',
+            span: 16,
+          },
+          dynamicFontSize: {
+            type: 'object',
+            widget: 'Card',
+            column: 3,
+            properties: {
+              min: {
+                title: i18n('schemas.text.min'),
+                type: 'number',
+                widget: 'inputNumber',
+                props: { min: 1 },
+              },
+              max: {
+                title: i18n('schemas.text.max'),
+                type: 'number',
+                widget: 'inputNumber',
+                props: { min: 1 },
+              },
+              fit: {
+                title: i18n('schemas.text.fit'),
+                type: 'string',
+                widget: 'select',
+                props: {
+                  options: [
+                    { label: i18n('schemas.horizontal'), value: DYNAMIC_FIT_HORIZONTAL },
+                    { label: i18n('schemas.vertical'), value: DYNAMIC_FIT_VERTICAL },
+                  ],
+                },
+              },
+            },
+          },
+        }
+      : {}),
     fontColor: {
       title: i18n('schemas.textColor'),
       type: 'string',

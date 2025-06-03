@@ -162,6 +162,7 @@ function mapCellStyle(style: CellStyle): Partial<Styles> {
     lineColor: style.borderColor,
     lineWidth: style.borderWidth,
     cellPadding: style.padding,
+    dynamicFontSize: style.dynamicFontSize,
   };
 }
 

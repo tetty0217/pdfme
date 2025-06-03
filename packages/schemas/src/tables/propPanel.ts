@@ -7,6 +7,7 @@ import {
   getColumnStylesPropPanelSchema,
 } from './helper.js';
 import { HEX_COLOR_PATTERN } from '../constants.js';
+import { propPanel as textPropPanel } from '../text/propPanel.js';
 
 export const propPanel: PropPanel<TableSchema> = {
   schema: ({ activeSchema, options, i18n }) => {
@@ -73,6 +74,7 @@ export const propPanel: PropPanel<TableSchema> = {
       },
     };
   },
+  widgets: textPropPanel.widgets,
   defaultSchema: {
     name: '',
     type: 'table',

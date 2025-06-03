@@ -1,7 +1,32 @@
-import { Font, mm2pt, pt2mm } from '@pdfme/common';
+import {
+  Schema,
+  isBlankPdf,
+  BasePdf,
+  CommonOptions,
+  getDefaultFont,
+  getFallbackFontName,
+  cloneDeep,
+  mm2pt,
+  pt2mm,
+  Font,
+} from '@pdfme/common';
 import type { Font as FontKitFont } from 'fontkit';
-import { splitTextToSize, getFontKitFont, widthOfTextAtSize } from '../text/helper.js';
-import type { Styles, TableInput, Settings, Section, StylesProps } from './types.js';
+import type {
+  TableSchema,
+  CellStyle,
+  Styles,
+  Spacing,
+  TableInput,
+  StylesProps,
+  Section,
+  Settings,
+} from './types.js';
+import {
+  getFontKitFont,
+  splitTextToSize,
+  calculateDynamicFontSize,
+  widthOfTextAtSize,
+} from '../text/helper.js';
 
 type ContentSettings = { body: Row[]; head: Row[]; columns: Column[] };
 
@@ -270,11 +295,42 @@ async function fitContent(
       if (!cell) continue;
 
       const fontKitFont = await getFontKitFontByFontName(cell.styles.fontName);
+
+      // Calculate dynamic font size if enabled
+      let fontSize = cell.styles.fontSize;
+      if (cell.styles.dynamicFontSize && row.section === 'body') {
+        const textSchema = {
+          name: '',
+          type: 'text' as const,
+          position: { x: 0, y: 0 },
+          width: cell.width,
+          height: 0, // Will be calculated based on content
+          fontName: cell.styles.fontName,
+          alignment: cell.styles.alignment,
+          verticalAlignment: cell.styles.verticalAlignment,
+          fontSize: cell.styles.fontSize,
+          lineHeight: cell.styles.lineHeight,
+          characterSpacing: cell.styles.characterSpacing,
+          fontColor: cell.styles.textColor,
+          backgroundColor: cell.styles.backgroundColor,
+          dynamicFontSize: cell.styles.dynamicFontSize,
+        };
+
+        fontSize = calculateDynamicFontSize({
+          textSchema,
+          fontKitFont,
+          value: cell.raw,
+        });
+
+        // Update cell styles with the calculated font size
+        cell.styles = { ...cell.styles, fontSize };
+      }
+
       cell.text = splitTextToSize({
         value: cell.raw,
         characterSpacing: cell.styles.characterSpacing,
         boxWidthInPt: mm2pt(cell.width),
-        fontSize: cell.styles.fontSize,
+        fontSize,
         fontKitFont,
       });
 

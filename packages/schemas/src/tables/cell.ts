@@ -1,11 +1,13 @@
 import { DEFAULT_FONT_NAME, Plugin, PDFRenderProps, getFallbackFontName } from '@pdfme/common';
+import type { Font as FontKitFont } from 'fontkit';
 import { uiRender as textUiRender } from '../text/uiRender.js';
 import { pdfRender as textPdfRender } from '../text/pdfRender.js';
-import line from '../shapes/line.js';
+import { calculateDynamicFontSize, getFontKitFont } from '../text/helper.js';
+import lineShape from '../shapes/line.js';
 import { rectangle } from '../shapes/rectAndEllipse.js';
 import type { CellSchema } from './types.js';
 import { getCellPropPanelSchema, getDefaultCellStyles } from './helper.js';
-const linePdfRender = line.pdf;
+const linePdfRender = lineShape.pdf;
 const rectanglePdfRender = rectangle.pdf;
 
 const renderLine = async (
@@ -55,7 +57,7 @@ const createLineDiv = (
 
 const cellSchema: Plugin<CellSchema> = {
   pdf: async (arg) => {
-    const { schema } = arg;
+    const { schema, options, _cache } = arg;
     const { position, width, height, borderWidth, padding } = schema;
 
     await Promise.all([
@@ -93,6 +95,42 @@ const cellSchema: Plugin<CellSchema> = {
       // LEFT
       renderLine(arg, schema, { x: position.x, y: position.y }, borderWidth.left, height),
     ]);
+
+    // Calculate dynamic font size if enabled
+    let fontSize = schema.fontSize;
+    if (schema.dynamicFontSize) {
+      const font = options?.font || { [DEFAULT_FONT_NAME]: { data: '', fallback: true } };
+      const fontName = schema.fontName || getFallbackFontName(font);
+      const fontKitFont = await getFontKitFont(
+        fontName,
+        font,
+        _cache as Map<string | number, FontKitFont>,
+      );
+
+      const textSchema = {
+        name: '',
+        type: 'text' as const,
+        position: { x: 0, y: 0 },
+        width: width - borderWidth.left - borderWidth.right - padding.left - padding.right,
+        height: height - borderWidth.top - borderWidth.bottom - padding.top - padding.bottom,
+        fontName: schema.fontName,
+        alignment: schema.alignment,
+        verticalAlignment: schema.verticalAlignment,
+        fontSize: schema.fontSize,
+        lineHeight: schema.lineHeight,
+        characterSpacing: schema.characterSpacing,
+        fontColor: schema.fontColor,
+        backgroundColor: '',
+        dynamicFontSize: schema.dynamicFontSize,
+      };
+
+      fontSize = calculateDynamicFontSize({
+        textSchema,
+        fontKitFont,
+        value: schema.content || '',
+      });
+    }
+
     // TEXT
     await textPdfRender({
       ...arg,
@@ -100,6 +138,7 @@ const cellSchema: Plugin<CellSchema> = {
         ...schema,
         type: 'text',
         backgroundColor: '',
+        fontSize,
         position: {
           x: position.x + borderWidth.left + padding.left,
           y: position.y + borderWidth.top + padding.top,
@@ -110,14 +149,58 @@ const cellSchema: Plugin<CellSchema> = {
     });
   },
   ui: async (arg) => {
-    const { schema, rootElement } = arg;
+    const { schema, rootElement, options, _cache } = arg;
     const { borderWidth, width, height, borderColor, backgroundColor } = schema;
     rootElement.style.backgroundColor = backgroundColor;
 
     const textDiv = createTextDiv(schema);
+
+    // Calculate dynamic font size for UI rendering if enabled
+    let uiSchema = { ...schema, backgroundColor: '' };
+    if (schema.dynamicFontSize) {
+      const font = options?.font || { [DEFAULT_FONT_NAME]: { data: '', fallback: true } };
+      const fontName = schema.fontName || getFallbackFontName(font);
+      const fontKitFont = await getFontKitFont(
+        fontName,
+        font,
+        _cache as Map<string | number, FontKitFont>,
+      );
+
+      const textSchema = {
+        name: '',
+        type: 'text' as const,
+        position: { x: 0, y: 0 },
+        width:
+          width - borderWidth.left - borderWidth.right - schema.padding.left - schema.padding.right,
+        height:
+          height -
+          borderWidth.top -
+          borderWidth.bottom -
+          schema.padding.top -
+          schema.padding.bottom,
+        fontName: schema.fontName,
+        alignment: schema.alignment,
+        verticalAlignment: schema.verticalAlignment,
+        fontSize: schema.fontSize,
+        lineHeight: schema.lineHeight,
+        characterSpacing: schema.characterSpacing,
+        fontColor: schema.fontColor,
+        backgroundColor: '',
+        dynamicFontSize: schema.dynamicFontSize,
+      };
+
+      const fontSize = calculateDynamicFontSize({
+        textSchema,
+        fontKitFont,
+        value: schema.content || '',
+      });
+
+      uiSchema = { ...uiSchema, fontSize };
+    }
+
     await textUiRender({
       ...arg,
-      schema: { ...schema, backgroundColor: '' },
+      schema: uiSchema,
       rootElement: textDiv,
     });
     rootElement.appendChild(textDiv);
