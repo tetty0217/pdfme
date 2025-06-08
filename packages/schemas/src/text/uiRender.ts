@@ -202,6 +202,7 @@ export const buildStyledTextContainer = (
     width: '100%',
     height: '100%',
     cursor: isEditable(mode, schema) ? 'text' : 'default',
+    overflow: schema.overflowHidden ? 'hidden' : 'visible',
   };
   Object.assign(container.style, containerStyle);
   rootElement.innerHTML = '';
@@ -230,6 +231,7 @@ export const buildStyledTextContainer = (
     paddingTop: `${topAdjustment}px`,
     backgroundColor: 'transparent',
     textDecoration: textDecorations.join(' '),
+    overflow: schema.overflowHidden ? 'hidden' : 'visible',
   };
 
   const textBlock = document.createElement('div');

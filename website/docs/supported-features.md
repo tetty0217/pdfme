@@ -12,7 +12,6 @@ For using schemas other than the Text schema, please refer to the following docu
 
 :::
 
-
 ### Text (text)
 
 - Style-related
@@ -25,6 +24,7 @@ For using schemas other than the Text schema, please refer to the following docu
   - Background Color
   - Underline
   - Strikethrough
+  - Overflow Hidden
 - Font-related
   - TrueType fonts (TTF & TTC)
   - OpenType fonts with PostScript or TrueType outlines (TTF, OTF, & OTC)

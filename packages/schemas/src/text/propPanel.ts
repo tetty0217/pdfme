@@ -153,6 +153,17 @@ export const propPanel: PropPanel<TextSchema> = {
           },
         ],
       },
+      '-------overflow': { type: 'void', widget: 'Divider' },
+      overflowHidden: {
+        title: 'Hide Overflow Text',
+        type: 'boolean',
+        widget: 'switch',
+        span: 24,
+        props: {
+          checkedChildren: 'Hidden',
+          unCheckedChildren: 'Visible',
+        },
+      },
     };
 
     return textSchema;
@@ -180,5 +191,6 @@ export const propPanel: PropPanel<TextSchema> = {
     opacity: DEFAULT_OPACITY,
     strikethrough: false,
     underline: false,
+    overflowHidden: false,
   },
 };

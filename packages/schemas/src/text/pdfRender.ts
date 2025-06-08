@@ -124,6 +124,16 @@ export const pdfRender = async (arg: PDFRenderProps<TextSchema>) => {
     page.drawRectangle({ x, y, width, height, rotate, color });
   }
 
+  // Apply clipping if overflow is hidden
+  if (schema.overflowHidden) {
+    page.pushOperators(
+      pdfLib.pushGraphicsState(),
+      pdfLib.rectangle(x, y, width, height),
+      pdfLib.clip(),
+      pdfLib.endPath(),
+    );
+  }
+
   const firstLineTextHeight = heightOfFontAtSize(fontKitFont, fontSize);
   const descent = getFontDescentInPt(fontKitFont, fontSize);
   const halfLineHeightAdjustment = lineHeight === 0 ? 0 : ((lineHeight - 1) * fontSize) / 2;
@@ -229,4 +239,9 @@ export const pdfRender = async (arg: PDFRenderProps<TextSchema>) => {
       opacity,
     });
   });
+
+  // Restore clipping if overflow was hidden
+  if (schema.overflowHidden) {
+    page.pushOperators(pdfLib.popGraphicsState());
+  }
 };
