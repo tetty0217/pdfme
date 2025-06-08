@@ -17,7 +17,7 @@ exports[`Preview(as Form) snapshot 1`] = `
           style="display: flex; align-items: center;"
         >
           <button
-            class="ant-btn css-dev-only-do-not-override-18afz5u ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
+            class="ant-btn css-dev-only-do-not-override-5uvb3z ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
             type="button"
           >
             <span
@@ -28,7 +28,7 @@ exports[`Preview(as Form) snapshot 1`] = `
             
           </button>
           <span
-            class="ant-typography css-dev-only-do-not-override-18afz5u"
+            class="ant-typography css-dev-only-do-not-override-5uvb3z"
             style="color: rgb(255, 255, 255); font-size: 14px; margin: 8px;"
           >
             <strong>
@@ -37,7 +37,7 @@ exports[`Preview(as Form) snapshot 1`] = `
             </strong>
           </span>
           <button
-            class="ant-btn css-dev-only-do-not-override-18afz5u ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
+            class="ant-btn css-dev-only-do-not-override-5uvb3z ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
             type="button"
           >
             <span
@@ -70,11 +70,11 @@ exports[`Preview(as Form) snapshot 1`] = `
                 style="height: 100%; width: 100%;"
               >
                 <div
-                  style="padding: 0px; resize: none; background-color: transparent; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; cursor: text;"
+                  style="padding: 0px; resize: none; background-color: transparent; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; cursor: text; overflow: visible;"
                 >
                   <div
                     id="text-1"
-                    style="font-family: inherit; color: rgb(0, 0, 0); font-size: 30pt; letter-spacing: 0pt; line-height: 1em; text-align: left; white-space: pre-wrap; word-break: break-word; resize: none; outline: none; margin-bottom: 0px; padding-top: 3.436640625px; background-color: transparent;"
+                    style="font-family: inherit; color: rgb(0, 0, 0); font-size: 30pt; letter-spacing: 0pt; line-height: 1em; text-align: left; white-space: pre-wrap; word-break: break-word; resize: none; outline: none; margin-bottom: 0px; padding-top: 3.436640625px; background-color: transparent; overflow: visible;"
                     tabindex="100"
                   />
                 </div>
@@ -131,7 +131,7 @@ exports[`Preview(as Viewer) snapshot 1`] = `
           style="display: flex; align-items: center;"
         >
           <button
-            class="ant-btn css-dev-only-do-not-override-18afz5u ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
+            class="ant-btn css-dev-only-do-not-override-5uvb3z ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
             type="button"
           >
             <span
@@ -142,7 +142,7 @@ exports[`Preview(as Viewer) snapshot 1`] = `
             
           </button>
           <span
-            class="ant-typography css-dev-only-do-not-override-18afz5u"
+            class="ant-typography css-dev-only-do-not-override-5uvb3z"
             style="color: rgb(255, 255, 255); font-size: 14px; margin: 8px;"
           >
             <strong>
@@ -151,7 +151,7 @@ exports[`Preview(as Viewer) snapshot 1`] = `
             </strong>
           </span>
           <button
-            class="ant-btn css-dev-only-do-not-override-18afz5u ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
+            class="ant-btn css-dev-only-do-not-override-5uvb3z ant-btn-text ant-btn-color-default ant-btn-variant-text ant-btn-icon-only"
             type="button"
           >
             <span
@@ -184,11 +184,11 @@ exports[`Preview(as Viewer) snapshot 1`] = `
                 style="height: 100%; width: 100%;"
               >
                 <div
-                  style="padding: 0px; resize: none; background-color: transparent; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; cursor: default;"
+                  style="padding: 0px; resize: none; background-color: transparent; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; height: 100%; cursor: default; overflow: visible;"
                 >
                   <div
                     id="text-1"
-                    style="font-family: inherit; color: rgb(0, 0, 0); font-size: 30pt; letter-spacing: 0pt; line-height: 1em; text-align: left; white-space: pre-wrap; word-break: break-word; resize: none; outline: none; margin-bottom: 0px; padding-top: 3.436640625px; background-color: transparent;"
+                    style="font-family: inherit; color: rgb(0, 0, 0); font-size: 30pt; letter-spacing: 0pt; line-height: 1em; text-align: left; white-space: pre-wrap; word-break: break-word; resize: none; outline: none; margin-bottom: 0px; padding-top: 3.436640625px; background-color: transparent; overflow: visible;"
                   >
                     <span
                       style="letter-spacing:inherit;"
