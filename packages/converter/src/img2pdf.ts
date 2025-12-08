@@ -1,41 +1,23 @@
 import { PDFDocument } from '@pdfme/pdf-lib';
 import { mm2pt } from '@pdfme/common';
 import type { ImageType } from './types.js';
+import { detectImageType } from './utils.js';
 
-interface Img2PdfOptions {
+interface Environment {
+  normalizeImageOrientation: (buffer: ArrayBuffer) => Promise<ArrayBuffer>;
+}
+
+export interface Img2PdfOptions {
   scale?: number;
   imageType?: ImageType;
   size?: { height: number; width: number }; // in millimeters
   margin?: [number, number, number, number]; // in millimeters [top, right, bottom, left]
 }
 
-function detectImageType(buffer: ArrayBuffer): 'jpeg' | 'png' | 'unknown' {
-  const bytes = new Uint8Array(buffer);
-
-  if (bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xd8) {
-    return 'jpeg';
-  }
-
-  if (
-    bytes.length >= 8 &&
-    bytes[0] === 0x89 &&
-    bytes[1] === 0x50 &&
-    bytes[2] === 0x4e &&
-    bytes[3] === 0x47 &&
-    bytes[4] === 0x0d &&
-    bytes[5] === 0x0a &&
-    bytes[6] === 0x1a &&
-    bytes[7] === 0x0a
-  ) {
-    return 'png';
-  }
-
-  return 'unknown';
-}
-
 export async function img2pdf(
   imgs: ArrayBuffer[],
   options: Img2PdfOptions = {},
+  env: Environment,
 ): Promise<ArrayBuffer> {
   try {
     const { scale = 1, size, margin = [0, 0, 0, 0] } = options;
@@ -44,21 +26,32 @@ export async function img2pdf(
       throw new Error('Input must be a non-empty array of image buffers');
     }
 
+    const { normalizeImageOrientation } = env;
+
     const doc = await PDFDocument.create();
     for (const img of imgs) {
       try {
         let image;
         const type = detectImageType(img);
+        let processedImg = img;
 
         if (type === 'jpeg') {
-          image = await doc.embedJpg(img);
+          try {
+            processedImg = await normalizeImageOrientation(img);
+          } catch (error) {
+            console.warn('[@pdfme/converter] Failed to normalize image orientation:', error);
+          }
+        }
+
+        if (type === 'jpeg') {
+          image = await doc.embedJpg(processedImg);
         } else if (type === 'png') {
-          image = await doc.embedPng(img);
+          image = await doc.embedPng(processedImg);
         } else {
           try {
-            image = await doc.embedJpg(img);
+            image = await doc.embedJpg(processedImg);
           } catch {
-            image = await doc.embedPng(img);
+            image = await doc.embedPng(processedImg);
           }
         }
 

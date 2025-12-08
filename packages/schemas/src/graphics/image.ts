@@ -14,7 +14,6 @@ import {
 } from '../utils.js';
 import { DEFAULT_OPACITY } from '../constants.js';
 import { getImageDimension } from './imagehelper.js';
-import { normalizeImageOrientation } from './orientation.js';
 
 const getCacheKey = (schema: Schema, input: string) => `${schema.type}${input}`;
 const fullSize = { width: '100%', height: '100%' };
@@ -27,13 +26,28 @@ const imageSchema: Plugin<ImageSchema> = {
   pdf: async (arg) => {
     const { value, schema, pdfDoc, page, _cache } = arg;
     if (!value) return;
-
+/**
+ * schemaからconverterの動的ランタイム関数を呼び出しているが、linterエラーが発生するのはなぜか。
+ * - Unsafe assignment of an error typed value.
+ * - Unsafe call of a(n) `error` type typed value.
+ * 
+ */
     const isPng = value.startsWith('data:image/png;');
-    /**
-     * pdf-lib's embedJpg does not interpret EXIF Orientation, so the direction is reflected in advance.
-     * @see https://github.com/Hopding/pdf-lib/issues/1284
-     */
-    const dataUrl = isPng ? value : await normalizeImageOrientation(value);
+    let dataUrl = value;
+    if (!isPng) {
+      try {
+        /**
+         * pdf-lib's embedJpg does not interpret EXIF Orientation, so the direction is reflected in advance.
+         * @see https://github.com/Hopding/pdf-lib/issues/1284
+         */
+        const { normalizeImageOrientation, arrayBufferToDataURL, dataURLToArrayBuffer } = await import('@pdfme/converter');
+        const buffer= dataURLToArrayBuffer(dataUrl)
+        const normalizedBuffer = await normalizeImageOrientation(buffer);
+        dataUrl = await arrayBufferToDataURL(normalizedBuffer)
+      } catch (error) {
+        console.warn('[@pdfme/schemas] Failed to normalize image orientation:', error);
+      }
+    }
 
     const inputImageCacheKey = getCacheKey(schema, dataUrl);
     let image = _cache.get(inputImageCacheKey) as PDFImage;
