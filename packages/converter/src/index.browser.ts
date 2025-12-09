@@ -1,14 +1,13 @@
 import * as pdfjsLib from 'pdfjs-dist';
+// @ts-expect-error - PDFJSWorker import is not properly typed but required for functionality
+import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry.js';
 import { pdf2img as _pdf2img, Pdf2ImgOptions } from './pdf2img.js';
-import { pdf2size as _pdf2size, Pdf2SizeOptions } from './pdf2size.js';
-import { img2pdf as _img2pdf, Img2PdfOptions } from './img2pdf.js';
 import { normalizeImageOrientation as _normalizeImageOrientation } from './normalizeImageOrientation.js';
+import { pdf2size as _pdf2size, Pdf2SizeOptions } from './pdf2size.js';
 import { detectImageType } from './utils.js';
+import { img2pdf as _img2pdf, Img2PdfOptions } from './img2pdf.js';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.js',
-  import.meta.url,
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker as unknown as string;
 
 export const arrayBufferToDataURL = (buffer: ArrayBuffer): Promise<string> => {
   return new Promise((resolve, reject) => {
