@@ -4,6 +4,11 @@ import type { Plugin } from '@pdfme/common';
 import type { Schema } from '@pdfme/common';
 import type * as CSS from 'csstype';
 import { px2mm } from '@pdfme/common';
+import {
+  arrayBufferToDataURL,
+  dataURLToArrayBuffer,
+  normalizeImageOrientation,
+} from '@pdfme/converter';
 import { Image } from 'lucide';
 import {
   convertForPdfLayoutProps,
@@ -36,8 +41,6 @@ const imageSchema: Plugin<ImageSchema> = {
          * pdf-lib's embedJpg does not interpret EXIF Orientation, so the direction is reflected in advance.
          * @see https://github.com/Hopding/pdf-lib/issues/1284
          */
-        const { normalizeImageOrientation, arrayBufferToDataURL, dataURLToArrayBuffer } =
-          await import('@pdfme/converter');
         const buffer = dataURLToArrayBuffer(dataUrl);
         const normalizedBuffer = await normalizeImageOrientation(buffer);
         dataUrl = await arrayBufferToDataURL(normalizedBuffer);
