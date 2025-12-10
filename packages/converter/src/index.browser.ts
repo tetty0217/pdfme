@@ -6,7 +6,7 @@ import { detectImageType } from './utils.js';
 import { img2pdf as _img2pdf, Img2PdfOptions } from './img2pdf.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.entry.js',
+  'pdfjs-dist/build/pdf.worker.min.js',
   import.meta.url,
 ).toString();
 
