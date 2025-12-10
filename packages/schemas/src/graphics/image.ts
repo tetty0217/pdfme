@@ -36,10 +36,6 @@ const imageSchema: Plugin<ImageSchema> = {
          * pdf-lib's embedJpg does not interpret EXIF Orientation, so the direction is reflected in advance.
          * @see https://github.com/Hopding/pdf-lib/issues/1284
          */
-        /**
-         * TODO: 実行時にWarningが発生して問題になっている
-         * installHook.js:1 SyntaxError: The requested module '/node_modules/.vite/deps/pdfjs-dist_build_pdf__worker__entry__js.js?v=0b0a5bfb' does not provide an export named 'default' (at index.browser.ts:3:8)
-         */
         const { normalizeImageOrientation, arrayBufferToDataURL, dataURLToArrayBuffer } =
           await import('@pdfme/converter');
         const buffer = dataURLToArrayBuffer(dataUrl);
