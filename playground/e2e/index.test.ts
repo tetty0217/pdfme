@@ -46,11 +46,17 @@ const snapShotOpt: MatchImageSnapshotOptions = {
 const viewport = { width: 1366, height: 768 };
 
 async function generatePdf(page: Page, browser: Browser): Promise<Buffer> {
+  // Get existing targets before clicking to detect new ones
+  const existingTargets = new Set(browser.targets().map(t => t.url()));
+
   await page.waitForSelector('#generate-pdf', { timeout });
   await page.click('#generate-pdf');
 
   const newTarget = await browser.waitForTarget(
-    (target) => target.url().startsWith('blob:'),
+    (target) => {
+      // Only match blob URLs that didn't exist before
+      return target.url().startsWith('blob:') && !existingTargets.has(target.url());
+    },
     { timeout }
   );
   const newPage = await newTarget?.page();
